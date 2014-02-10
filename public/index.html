@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<script src="http://localhost:8120/socket.io/socket.io.js"></script>
+<script src="http://franciscodias.net:8120/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 
 EnemyTank = function (index, game, player, bullets, startX, startY) {
@@ -129,7 +129,7 @@ var nextFire = 0;
 
 function create () {
 
-    socket = io.connect("http://localhost", {port: 8120, transports: ["websocket"]});
+    socket = io.connect("http://franciscodias.net", {port: 8120, transports: ["websocket"]});
 
     //  Resize our game world to be a 2000 x 2000 square
     game.world.setBounds(-1000, -1000, 2000, 2000);
@@ -338,8 +338,17 @@ function update () {
 
     if (game.input.activePointer.isDown)
     {
-        //  Boom!
-        fire();
+        if (game.physics.distanceToPointer(tank) >= 10) {
+            currentSpeed = 300;
+        }
+        
+        tank.rotation = game.physics.angleToPointer(tank);
+
+
+        //game.input.activePointer.x;
+
+        //  Boom!... NOT!
+        //fire();
     }
 
     socket.emit("move player", {x: tank.x, y:tank.y});
