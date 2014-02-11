@@ -50,7 +50,7 @@ EnemyTank = function (index, game, player, bullets, startX, startY) {
 EnemyTank.prototype.damage = function() {
 
     this.health -= 1;
-
+    /*
     if (this.health <= 0)
     {
         this.alive = false;
@@ -61,7 +61,7 @@ EnemyTank.prototype.damage = function() {
 
         return true;
     }
-
+    */
     return false;
 
 }
@@ -74,22 +74,7 @@ EnemyTank.prototype.update = function() {
 
     this.turret.x = this.tank.x;
     this.turret.y = this.tank.y;
-    this.turret.rotation = this.game.physics.angleBetween(this.tank, this.player);
-
-    if (this.game.physics.distanceBetween(this.tank, this.player) < 300)
-    {
-        if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
-        {
-            this.nextFire = this.game.time.now + this.fireRate;
-
-            var bullet = this.bullets.getFirstDead();
-
-            bullet.reset(this.turret.x, this.turret.y);
-
-            bullet.rotation = this.game.physics.moveToObject(bullet, this.player, 500);
-        }
-    }
-
+    //this.turret.rotation = this.game.physics.angleBetween(this.tank, this.player);
 };
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
@@ -132,15 +117,15 @@ function create () {
     socket = io.connect("http://localhost", {port: 8120, transports: ["websocket"]});
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(-1000, -1000, 2000, 2000);
+    game.world.setBounds(-500, -500, 1000, 1000);
 
     //  Our tiled scrolling background
     land = game.add.tileSprite(0, 0, 800, 600, 'earth');
     land.fixedToCamera = true;
 
     //  The base of our tank
-    var startX = Math.round(Math.random()*(2000)-1000),
-        startY = Math.round(Math.random()*(2000)-1000);
+    var startX = Math.round(Math.random()*(1000)-500),
+        startY = Math.round(Math.random()*(1000)-500);
     tank = game.add.sprite(startX, startY, 'tank', 'tank1');
     tank.anchor.setTo(0.5, 0.5);
     tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
@@ -355,7 +340,7 @@ function bulletHitEnemy (tank, bullet) {
 
     bullet.kill();
 
-    var destroyed = enemies[tank.name].damage();
+    var destroyed = playerById(tank.name).damage();
 
     if (destroyed)
     {
