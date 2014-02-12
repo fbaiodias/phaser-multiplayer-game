@@ -44,6 +44,7 @@ RemotePlayer = function (index, game, player, startX, startY) {
 RemotePlayer.prototype.update = function() {
     if(this.player.x != this.lastPosition.x || this.player.y != this.lastPosition.y) {
         this.player.play('move');
+        this.player.rotation = Math.PI + game.physics.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y);
     } else {
         this.player.play('stop');
     }
@@ -92,7 +93,7 @@ function create () {
     player.animations.add('stop', [3], 20, true);
 
     //  This will force it to decelerate and limit its speed
-    player.body.drag.setTo(200, 200);
+    //player.body.drag.setTo(200, 200);
     player.body.maxVelocity.setTo(400, 400);
     player.body.collideWorldBounds = true;
 
