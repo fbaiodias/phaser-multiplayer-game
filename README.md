@@ -1,4 +1,8 @@
-phaser-tanks-multiplayer
+phaser-multiplayer-game
 ========================
 
-Phaser tanks example game gone multiplayer
+Simple real-time multiplayer phaser game which uses node and websockets.
+
+
+Based on the tutorial found here:
+http://rawkes.com/articles/creating-a-real-time-multiplayer-game-with-websockets-and-node.html
