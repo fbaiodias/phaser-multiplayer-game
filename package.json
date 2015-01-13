@@ -4,15 +4,16 @@
   "description": "Phaser example gone multiplayer!",
   "main": "game.js",
   "scripts": {
-    "start": "node_modules/.bin/nodemon game.js",
+    "start": "http-server & nodemon game.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Francisco Dias",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "dependencies": {
     "socket.io": "~0.9.16"
   },
   "devDependencies": {
+    "http-server": "^0.7.4",
     "nodemon": "~0.7.10"
   }
 }
