@@ -1,10 +1,10 @@
-<!doctype html> 
-<html lang="en"> 
-<head> 
-	<meta charset="UTF-8" />
-	<title>Phaser - Getting started</title>
-	<script type="text/javascript" src="js/phaser.min.js"></script>
-    <style type="text/css">
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <title>Phaser multiplayer game</title>
+  <script type='text/javascript' src='/js/phaser.min.js'></script>
+    <style type='text/css'>
         body {
             margin: 0;
         }
@@ -12,8 +12,8 @@
 </head>
 <body>
 
-<script src="http://franciscodias.net:8120/socket.io/socket.io.js"></script>
-<script type="text/javascript">
+<script src='/socket.io/socket.io.js'></script>
+<script type='text/javascript'>
 
 RemotePlayer = function (index, game, player, startX, startY) {
 
@@ -26,7 +26,7 @@ RemotePlayer = function (index, game, player, startX, startY) {
     this.alive = true;
 
     this.player = game.add.sprite(x, y, 'enemy');
-    
+
     this.player.animations.add('move', [0,1,2,3,4,5,6,7], 20, true);
     this.player.animations.add('stop', [3], 20, true);
 
@@ -75,7 +75,7 @@ var cursors;
 
 function create () {
 
-    socket = io.connect("http://franciscodias.net", {port: 8120, transports: ["websocket"]});
+    socket = io.connect();
 
     //  Resize our game world to be a 2000 x 2000 square
     game.world.setBounds(-500, -500, 1000, 1000);
@@ -114,37 +114,37 @@ function create () {
 
 var setEventHandlers = function() {
     // Socket connection successful
-    socket.on("connect", onSocketConnected);
+    socket.on('connect', onSocketConnected);
 
     // Socket disconnection
-    socket.on("disconnect", onSocketDisconnect);
+    socket.on('disconnect', onSocketDisconnect);
 
     // New player message received
-    socket.on("new player", onNewPlayer);
+    socket.on('new player', onNewPlayer);
 
     // Player move message received
-    socket.on("move player", onMovePlayer);
+    socket.on('move player', onMovePlayer);
 
     // Player removed message received
-    socket.on("remove player", onRemovePlayer);
+    socket.on('remove player', onRemovePlayer);
 };
 
 // Socket connected
 function onSocketConnected() {
-    console.log("Connected to socket server");
+    console.log('Connected to socket server');
 
     // Send local player data to the game server
-    socket.emit("new player", {x: player.x, y:player.y});
+    socket.emit('new player', {x: player.x, y:player.y});
 };
 
 // Socket disconnected
 function onSocketDisconnect() {
-    console.log("Disconnected from socket server");
+    console.log('Disconnected from socket server');
 };
 
 // New player
 function onNewPlayer(data) {
-    console.log("New player connected: "+data.id);
+    console.log('New player connected: '+data.id);
 
     // Add new player to the remote players array
     enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y));
@@ -152,19 +152,19 @@ function onNewPlayer(data) {
 
 // Move player
 function onMovePlayer(data) {
-    
+
     var movePlayer = playerById(data.id);
 
     // Player not found
     if (!movePlayer) {
-        console.log("Player not found: "+data.id);
+        console.log('Player not found: '+data.id);
         return;
     };
 
     // Update player position
     movePlayer.player.x = data.x;
     movePlayer.player.y = data.y;
-    
+
 };
 
 // Remove player
@@ -174,7 +174,7 @@ function onRemovePlayer(data) {
 
     // Player not found
     if (!removePlayer) {
-        console.log("Player not found: "+data.id);
+        console.log('Player not found: '+data.id);
         return;
     };
 
@@ -221,10 +221,10 @@ function update () {
     if (currentSpeed > 0)
     {
         game.physics.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity);
-    
+
         player.animations.play('move');
-    } 
-    else 
+    }
+    else
     {
         player.animations.play('stop');
     }
@@ -236,12 +236,12 @@ function update () {
     {
         if (game.physics.distanceToPointer(player) >= 10) {
             currentSpeed = 300;
-        
+
             player.rotation = game.physics.angleToPointer(player);
         }
     }
 
-    socket.emit("move player", {x: player.x, y:player.y});
+    socket.emit('move player', {x: player.x, y:player.y});
 }
 
 function render () {
@@ -253,9 +253,9 @@ function playerById(id) {
     var i;
     for (i = 0; i < enemies.length; i++) {
         if (enemies[i].player.name == id)
-            return enemies[i];
+          return enemies[i];
     };
-    
+
     return false;
 };
 

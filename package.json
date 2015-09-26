@@ -1,19 +1,19 @@
 {
   "name": "tanks-multiplayer",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Phaser example gone multiplayer!",
   "main": "game.js",
   "scripts": {
-    "start": "http-server & nodemon game.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node game.js",
+    "dev": "nodemon game.js"
   },
   "author": "Francisco Dias",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "~0.9.16"
+    "ecstatic": "^1.0.1",
+    "socket.io": "^0.9.16"
   },
   "devDependencies": {
-    "http-server": "^0.7.4",
-    "nodemon": "~0.7.10"
+    "nodemon": "^0.7.10"
   }
 }
