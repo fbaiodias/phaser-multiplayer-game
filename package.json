@@ -1,11 +1,12 @@
 {
-  "name": "tanks-multiplayer",
+  "name": "phaser-multiplayer-game",
   "version": "1.0.0",
   "description": "Phaser example gone multiplayer!",
-  "main": "game.js",
+  "main": "lib/game.js",
   "scripts": {
-    "start": "node game.js",
-    "dev": "nodemon game.js"
+    "start": "node .",
+    "dev": "nodemon .",
+    "lint": "standard --verbose | snazzy"
   },
   "author": "Francisco Dias",
   "license": "MIT",
@@ -14,6 +15,7 @@
     "socket.io": "^0.9.16"
   },
   "devDependencies": {
-    "nodemon": "^0.7.10"
+    "nodemon": "^0.7.10",
+    "standard": "^5.3.1"
   }
 }
