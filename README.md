@@ -5,7 +5,7 @@ phaser-multiplayer-game
 
 Simple real-time multiplayer [phaser](http://phaser.io/) game which uses node and websockets.
 
-![preview](https://i.cloudup.com/AkZlDOYLmm.thumb.png)
+![preview](https://raw.githubusercontent.com/xicombd/phaser-multiplayer-game/master/public/assets/preview.gif)
 
 Based on the tutorial found here:
 http://rawkes.com/articles/creating-a-real-time-multiplayer-game-with-websockets-and-node.html
