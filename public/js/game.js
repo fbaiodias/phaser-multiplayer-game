@@ -78,6 +78,12 @@ var setEventHandlers = function () {
 function onSocketConnected () {
   console.log('Connected to socket server')
 
+  // Reset enemies on reconnect
+  enemies.forEach(function (enemy) {
+    enemy.player.kill()
+  })
+  enemies = []
+
   // Send local player data to the game server
   socket.emit('new player', { x: player.x, y: player.y })
 }
@@ -90,6 +96,13 @@ function onSocketDisconnect () {
 // New player
 function onNewPlayer (data) {
   console.log('New player connected:', data.id)
+
+  // Avoid possible duplicate players
+  var duplicate = playerById(data.id)
+  if (duplicate) {
+    console.log('Duplicate player!')
+    return
+  }
 
   // Add new player to the remote players array
   enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y))
