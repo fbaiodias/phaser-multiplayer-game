@@ -161,10 +161,10 @@ function update () {
       currentSpeed -= 4
     }
   }
+  
+  game.physics.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
 
   if (currentSpeed > 0) {
-    game.physics.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
-
     player.animations.play('move')
   } else {
     player.animations.play('stop')
