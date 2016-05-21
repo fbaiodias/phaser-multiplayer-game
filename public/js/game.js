@@ -4,8 +4,9 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload () {
   game.load.image('earth', 'assets/light_sand.png')
-  game.load.spritesheet('dude', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('dude', 'assets/guy.png', 0, 0)
   game.load.spritesheet('enemy', 'assets/dude.png', 64, 64)
+  
 }
 
 var socket // Socket connection
@@ -17,7 +18,12 @@ var player
 var enemies
 
 var currentSpeed = 0
+
+var speed = 5
+
 var cursors
+
+
 
 function create () {
   socket = io.connect()
@@ -32,7 +38,9 @@ function create () {
   // The base of our player
   var startX = Math.round(Math.random() * (1000) - 500)
   var startY = Math.round(Math.random() * (1000) - 500)
+  
   player = game.add.sprite(startX, startY, 'dude')
+  
   player.anchor.setTo(0.5, 0.5)
   player.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7], 20, true)
   player.animations.add('stop', [3], 20, true)
@@ -45,6 +53,13 @@ function create () {
 
   // Create some baddies to waste :)
   enemies = []
+  
+cursors = {
+  w: game.input.keyboard.addKey(Phaser.Keyboard.W),
+  a: game.input.keyboard.addKey(Phaser.Keyboard.A),
+  s: game.input.keyboard.addKey(Phaser.Keyboard.S),
+  d: game.input.keyboard.addKey(Phaser.Keyboard.D)
+}
 
   player.bringToTop()
 
@@ -52,7 +67,7 @@ function create () {
   game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300)
   game.camera.focusOnXY(0, 0)
 
-  cursors = game.input.keyboard.createCursorKeys()
+/* cursors = game.input.keyboard.createCursorKeys() Default up down right left controls */
 
   // Start listening for events
   setEventHandlers()
@@ -148,39 +163,28 @@ function update () {
     }
   }
 
-  if (cursors.left.isDown) {
-    player.angle -= 4
-  } else if (cursors.right.isDown) {
-    player.angle += 4
-  }
-
-  if (cursors.up.isDown) {
-    // The speed we'll travel at
-    currentSpeed = 300
-  } else {
-    if (currentSpeed > 0) {
-      currentSpeed -= 4
-    }
+ if (cursors.a.isDown) {
+    player.body.x -= speed;
   }
   
+  else if (cursors.d.isDown) {
+    player.body.x += speed;	
+  }
+
+  if (cursors.w.isDown) {
+    player.body.y -= speed;	
+  }
+  else if (cursors.s.isDown) {
+    player.body.y += speed;	
+  }
+
+  player.rotation = game.physics.arcade.angleToPointer(player)
+
   game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
 
-  if (currentSpeed > 0) {
-    player.animations.play('move')
-  } else {
-    player.animations.play('stop')
-  }
 
   land.tilePosition.x = -game.camera.x
   land.tilePosition.y = -game.camera.y
-
-  if (game.input.activePointer.isDown) {
-    if (game.physics.arcade.distanceToPointer(player) >= 10) {
-      currentSpeed = 300
-
-      player.rotation = game.physics.arcade.angleToPointer(player)
-    }
-  }
 
   socket.emit('move player', { x: player.x, y: player.y })
 }
