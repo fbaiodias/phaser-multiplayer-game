@@ -39,6 +39,7 @@ function create () {
 
   // This will force it to decelerate and limit its speed
   // player.body.drag.setTo(200, 200)
+  game.physics.enable(player, Phaser.Physics.ARCADE);
   player.body.maxVelocity.setTo(400, 400)
   player.body.collideWorldBounds = true
 
@@ -78,6 +79,12 @@ var setEventHandlers = function () {
 function onSocketConnected () {
   console.log('Connected to socket server')
 
+  // Reset enemies on reconnect
+  enemies.forEach(function (enemy) {
+    enemy.player.kill()
+  })
+  enemies = []
+
   // Send local player data to the game server
   socket.emit('new player', { x: player.x, y: player.y })
 }
@@ -90,6 +97,13 @@ function onSocketDisconnect () {
 // New player
 function onNewPlayer (data) {
   console.log('New player connected:', data.id)
+
+  // Avoid possible duplicate players
+  var duplicate = playerById(data.id)
+  if (duplicate) {
+    console.log('Duplicate player!')
+    return
+  }
 
   // Add new player to the remote players array
   enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y))
@@ -130,7 +144,7 @@ function update () {
   for (var i = 0; i < enemies.length; i++) {
     if (enemies[i].alive) {
       enemies[i].update()
-      game.physics.collide(player, enemies[i].player)
+      game.physics.arcade.collide(player, enemies[i].player)
     }
   }
 
@@ -148,10 +162,10 @@ function update () {
       currentSpeed -= 4
     }
   }
+  
+  game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
 
   if (currentSpeed > 0) {
-    game.physics.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
-
     player.animations.play('move')
   } else {
     player.animations.play('stop')
@@ -161,10 +175,10 @@ function update () {
   land.tilePosition.y = -game.camera.y
 
   if (game.input.activePointer.isDown) {
-    if (game.physics.distanceToPointer(player) >= 10) {
+    if (game.physics.arcade.distanceToPointer(player) >= 10) {
       currentSpeed = 300
 
-      player.rotation = game.physics.angleToPointer(player)
+      player.rotation = game.physics.arcade.angleToPointer(player)
     }
   }
 

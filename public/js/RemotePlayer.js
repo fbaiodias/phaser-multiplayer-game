@@ -17,6 +17,7 @@ var RemotePlayer = function (index, game, player, startX, startY) {
   this.player.anchor.setTo(0.5, 0.5)
 
   this.player.name = index.toString()
+  game.physics.enable(this.player, Phaser.Physics.ARCADE)
   this.player.body.immovable = true
   this.player.body.collideWorldBounds = true
 
@@ -28,7 +29,7 @@ var RemotePlayer = function (index, game, player, startX, startY) {
 RemotePlayer.prototype.update = function () {
   if (this.player.x !== this.lastPosition.x || this.player.y !== this.lastPosition.y) {
     this.player.play('move')
-    this.player.rotation = Math.PI + game.physics.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y)
+    this.player.rotation = Math.PI + game.physics.arcade.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y)
   } else {
     this.player.play('stop')
   }
