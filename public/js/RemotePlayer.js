@@ -1,8 +1,9 @@
 /* global game */
 
-var RemotePlayer = function (index, game, player, startX, startY) {
+var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   var x = startX
   var y = startY
+  var angle = startAngle
 
   this.game = game
   this.health = 3
@@ -21,13 +22,13 @@ var RemotePlayer = function (index, game, player, startX, startY) {
   this.player.body.immovable = true
   this.player.body.collideWorldBounds = true
 
-  this.player.angle = game.rnd.angle()
+  this.player.angle = angle
 
-  this.lastPosition = { x: x, y: y }
+  this.lastPosition = { x: x, y: y, angle: angle }
 }
 
 RemotePlayer.prototype.update = function () {
-  if (this.player.x !== this.lastPosition.x || this.player.y !== this.lastPosition.y) {
+  if (this.player.x !== this.lastPosition.x || this.player.y !== this.lastPosition.y || this.player.angle != this.lastPosition.angle) {
     this.player.play('move')
     this.player.rotation = Math.PI + game.physics.arcade.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y)
   } else {
@@ -36,6 +37,7 @@ RemotePlayer.prototype.update = function () {
 
   this.lastPosition.x = this.player.x
   this.lastPosition.y = this.player.y
+  this.lastPosition.angle = this.player.angle
 }
 
 window.RemotePlayer = RemotePlayer

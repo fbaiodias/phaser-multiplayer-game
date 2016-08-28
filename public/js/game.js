@@ -86,7 +86,7 @@ function onSocketConnected () {
   enemies = []
 
   // Send local player data to the game server
-  socket.emit('new player', { x: player.x, y: player.y })
+  socket.emit('new player', { x: player.x, y: player.y, angle: player.angle })
 }
 
 // Socket disconnected
@@ -106,7 +106,7 @@ function onNewPlayer (data) {
   }
 
   // Add new player to the remote players array
-  enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y))
+  enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y, data.angle))
 }
 
 // Move player
@@ -122,6 +122,7 @@ function onMovePlayer (data) {
   // Update player position
   movePlayer.player.x = data.x
   movePlayer.player.y = data.y
+  movePlayer.player.angle = data.angle
 }
 
 // Remove player
@@ -162,7 +163,7 @@ function update () {
       currentSpeed -= 4
     }
   }
-  
+
   game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
 
   if (currentSpeed > 0) {
@@ -182,7 +183,7 @@ function update () {
     }
   }
 
-  socket.emit('move player', { x: player.x, y: player.y })
+  socket.emit('move player', { x: player.x, y: player.y, angle: player.angle })
 }
 
 function render () {
