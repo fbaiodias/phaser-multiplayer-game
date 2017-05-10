@@ -151,11 +151,13 @@ function onRemovePlayer (data) {
 function onShootPlayer(data) {
   var shootPlayer = playerById(data.id);
   
+  // Player not found
   if(!shootPlayer) {
-    console.log("Player not found: ', data.id);
+    console.log('Player not found: ' + data.id);
     return;
   }
   
+  fireBullet(false, shootPlayer.player.x, shootPlayer.player.y, shootPlayer.player.angle);
 }
 
 function update () {
@@ -182,8 +184,16 @@ function update () {
   }
   
   if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-    fireBullet();
+    fireBullet(true, player.x, player.y, player.angle);
   }
+  
+  bullets.forEach(function(bullet) {
+    if(bullet.distanceBetween(player) > 1000) {
+      bullet.kill();
+    } else {
+      game.physics.arcade.velocityFromAngle(bullet.angle - 90, 2500, bullet.body.velocity);
+    }
+  });
 
   game.physics.arcade.velocityFromAngle(player.angle - 90, currentSpeed, player.body.velocity);
 
@@ -197,8 +207,16 @@ function render () {
 
 }
 
-function fireBullet() {
+function fireBullet(isLocal, startX, startY, startAngle) {
+  if(isLocal) {
+    socket.emit('shoot', { x: startX, y: startY, angle: startAngle });
+  }
   
+  var newBullet = game.add.sprite(startX, startY, 'missile');
+  newBullet.anchor.setTo(0.5, 0.5);
+  game.physics.enable(newBullet, Phaser.Physics.ARCADE);
+  
+  bullets.push(newBullet);
 }
 
 // Find player by ID
