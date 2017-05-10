@@ -162,7 +162,7 @@ function update () {
     }
   }
 
-  game.physics.arcade.velocityFromRotation(player.rotation - 90, currentSpeed, player.body.velocity);
+  game.physics.arcade.velocityFromRotation(player.angle - 90, currentSpeed, player.body.velocity);
 
   land.tilePosition.x = -game.camera.x;
   land.tilePosition.y = -game.camera.y;
