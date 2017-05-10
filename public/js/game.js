@@ -6,7 +6,6 @@ function preload () {
   game.load.image('space', 'assets/starfield.jpg');
   game.load.image('fighter', 'assets/Human-Fighter.png');
   game.load.image('enemy', 'assets/Fighter.png');
-  game.load.image('missile', 'assets/Human-Missile.png');
 }
 
 var socket; // Socket connection
@@ -16,7 +15,6 @@ var land;
 var player;
 
 var enemies;
-var bullets;
 
 var currentSpeed = 0;
 var cursors;
@@ -45,9 +43,8 @@ function create () {
   player.body.maxVelocity.setTo(400, 400);
   player.body.collideWorldBounds = true;
 
-  // Create some baddies to waste and some bullets to waste 'em with! :)
+  // Create some baddies to waste :)
   enemies = [];
-  bullets = [];
 
   player.bringToTop();
 
@@ -76,9 +73,6 @@ var setEventHandlers = function () {
 
   // Player removed message received
   socket.on('remove player', onRemovePlayer);
-  
-  // Player shoot message received
-  socket.on('shoot player', onShootPlayer);
 }
 
 // Socket connected
@@ -90,7 +84,6 @@ function onSocketConnected () {
     enemy.player.kill();
   });
   enemies = [];
-  bullets = [];
 
   // Send local player data to the game server
   socket.emit('new player', { x: player.x, y: player.y, angle: player.angle });
@@ -148,18 +141,6 @@ function onRemovePlayer (data) {
   enemies.splice(enemies.indexOf(removePlayer), 1);
 }
 
-function onShootPlayer(data) {
-  var shootPlayer = playerById(data.id);
-  
-  // Player not found
-  if(!shootPlayer) {
-    console.log('Player not found: ' + data.id);
-    return;
-  }
-  
-  fireBullet(false, shootPlayer.player.x, shootPlayer.player.y, shootPlayer.player.angle);
-}
-
 function update () {
   for (var i = 0; i < enemies.length; i++) {
     if (enemies[i].alive) {
@@ -182,18 +163,6 @@ function update () {
       currentSpeed -= 4;
     }
   }
-  
-  if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-    fireBullet(true, player.x, player.y, player.angle);
-  }
-  
-  bullets.forEach(function(bullet) {
-    if(bullet.distanceBetween(player) > 1000) {
-      bullet.kill();
-    } else {
-      game.physics.arcade.velocityFromAngle(bullet.angle - 90, 2500, bullet.body.velocity);
-    }
-  });
 
   game.physics.arcade.velocityFromAngle(player.angle - 90, currentSpeed, player.body.velocity);
 
@@ -205,18 +174,6 @@ function update () {
 
 function render () {
 
-}
-
-function fireBullet(isLocal, startX, startY, startAngle) {
-  if(isLocal) {
-    socket.emit('shoot', { x: startX, y: startY, angle: startAngle });
-  }
-  
-  var newBullet = game.add.sprite(startX, startY, 'missile');
-  newBullet.anchor.setTo(0.5, 0.5);
-  game.physics.enable(newBullet, Phaser.Physics.ARCADE);
-  
-  bullets.push(newBullet);
 }
 
 // Find player by ID
