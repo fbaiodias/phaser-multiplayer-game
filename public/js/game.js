@@ -15,6 +15,7 @@ var land;
 var player;
 
 var enemies;
+var bullets;
 
 var currentSpeed = 0;
 var cursors;
@@ -43,8 +44,9 @@ function create () {
   player.body.maxVelocity.setTo(400, 400);
   player.body.collideWorldBounds = true;
 
-  // Create some baddies to waste :)
+  // Create some baddies to waste and some bullets to waste 'em with! :)
   enemies = [];
+  bullets = [];
 
   player.bringToTop();
 
@@ -84,6 +86,7 @@ function onSocketConnected () {
     enemy.player.kill();
   });
   enemies = [];
+  bullets = [];
 
   // Send local player data to the game server
   socket.emit('new player', { x: player.x, y: player.y, angle: player.angle });
