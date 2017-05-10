@@ -6,6 +6,7 @@ function preload () {
   game.load.image('space', 'assets/starfield.jpg');
   game.load.image('fighter', 'assets/Human-Fighter.png');
   game.load.image('enemy', 'assets/Fighter.png');
+  game.load.image('missile', 'assets/Human-Missile.png');
 }
 
 var socket; // Socket connection
@@ -75,6 +76,9 @@ var setEventHandlers = function () {
 
   // Player removed message received
   socket.on('remove player', onRemovePlayer);
+  
+  // Player shoot message received
+  socket.on('shoot player', onShootPlayer);
 }
 
 // Socket connected
@@ -144,6 +148,16 @@ function onRemovePlayer (data) {
   enemies.splice(enemies.indexOf(removePlayer), 1);
 }
 
+function onShootPlayer(data) {
+  var shootPlayer = playerById(data.id);
+  
+  if(!shootPlayer) {
+    console.log("Player not found: ', data.id);
+    return;
+  }
+  
+}
+
 function update () {
   for (var i = 0; i < enemies.length; i++) {
     if (enemies[i].alive) {
@@ -166,6 +180,10 @@ function update () {
       currentSpeed -= 4;
     }
   }
+  
+  if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+    fireBullet();
+  }
 
   game.physics.arcade.velocityFromAngle(player.angle - 90, currentSpeed, player.body.velocity);
 
@@ -177,6 +195,10 @@ function update () {
 
 function render () {
 
+}
+
+function fireBullet() {
+  
 }
 
 // Find player by ID
