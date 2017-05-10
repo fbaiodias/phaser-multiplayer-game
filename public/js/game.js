@@ -28,6 +28,8 @@ function create () {
   // Our tiled scrolling background
   land = game.add.tileSprite(0, 0, 800, 600, 'space');
   land.fixedToCamera = true;
+  
+  game.physics.startSystem(Phaser.Physics.ARCADE);
 
   // The base of our player
   var startX = Math.round(Math.random() * (1000) - 500);
@@ -162,7 +164,7 @@ function update () {
     }
   }
 
-  game.physics.arcade.velocityFromRotation(player.angle - 90, currentSpeed, player.body.velocity);
+  game.physics.arcade.velocityFromAngle(player.angle, currentSpeed, player.body.velocity);
 
   land.tilePosition.x = -game.camera.x;
   land.tilePosition.y = -game.camera.y;
