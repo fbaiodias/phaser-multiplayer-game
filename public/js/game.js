@@ -162,24 +162,10 @@ function update () {
     }
   }
 
-  game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity);
-
-  if (currentSpeed > 0) {
-    player.animations.play('move');
-  } else {
-    player.animations.play('stop');
-  }
+  game.physics.arcade.velocityFromRotation(player.rotation - 90, currentSpeed, player.body.velocity);
 
   land.tilePosition.x = -game.camera.x;
   land.tilePosition.y = -game.camera.y;
-
-  if (game.input.activePointer.isDown) {
-    if (game.physics.arcade.distanceToPointer(player) >= 10) {
-      currentSpeed = 300;
-
-      player.rotation = game.physics.arcade.angleToPointer(player);
-    }
-  }
 
   socket.emit('move player', { x: player.x, y: player.y, angle: player.angle });
 }
