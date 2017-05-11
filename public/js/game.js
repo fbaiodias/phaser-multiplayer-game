@@ -3,14 +3,28 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 function preload () {
+  // Space Background
   game.load.image('space', 'assets/starfield.jpg');
+  
+  // Ships
   game.load.image('fighter', 'assets/Human-Fighter.png');
+  game.load.image('corvette', 'assets/Human-Corvette.png');
+  game.load.image('frigate', 'assets/Human-Frigate.png');
+  game.load.image('destroyer', 'assets/Human-Destroyer.png');
+  game.load.image('battleship', 'assets/Human-Battleship.png');
+  game.load.image('battlecruiser', 'assets/Human-Battlecruiser.png');
+  game.load.image('heavycruiser', 'assets/Human-HeavyCruiser.png');
+  game.load.image('cruiser', 'assets/Human-Cruiser.png');
   game.load.image('enemy', 'assets/Fighter.png');
+  
+  // Space Station
+  game.load.image('station', 'assets/Human-Station.png');
 }
 
 var socket; // Socket connection
 
 var land;
+var station;
 
 var player;
 
@@ -28,6 +42,9 @@ function create () {
   // Our tiled scrolling background
   land = game.add.tileSprite(0, 0, 800, 600, 'space');
   land.fixedToCamera = true;
+  
+  // Add a space station for player interaction
+  station = game.add.sprite(game.world.centerX, game.world.centerY, 'station');
   
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -161,6 +178,31 @@ function update () {
   } else {
     if (currentSpeed > 0) {
       currentSpeed -= 4;
+    }
+  }
+  
+  if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.intersects(player, station)) {
+    var random = Math.floor(Math.random() * (8 - 1)) + 1;
+    
+    if(random == 8) {
+      player.loadTexture('fighter');
+    } else if(random == 7) {
+      player.loadTexture('corvette');
+    } else if(random == 6) {
+      player.loadTexture('frigate');
+    } else if(random == 5) {
+      player.loadTexture('destroyer');
+    } else if(random == 4) {
+      player.loadTexture('battleship');
+    } else if(random == 3) {
+      player.loadTexture('battlecruiser');
+    } else if(random == 2) {
+      player.loadTexture('cruiser');
+    } else if(random == 1) {
+      player.loadTexture('heavycruiser');
+    } else {
+      console.log("An error occured with the random number generation");
+      return;
     }
   }
 
