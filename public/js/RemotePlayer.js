@@ -26,7 +26,7 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
 
 RemotePlayer.prototype.update = function () {
   if (this.player.x !== this.lastPosition.x || this.player.y !== this.lastPosition.y || this.player.angle != this.lastPosition.angle) {
-    this.player.rotation = Math.PI + game.physics.arcade.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y);
+    this.player.rotation = (Math.PI + game.physics.arcade.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y)) - (Math.PI / 2);
   }
 
   this.lastPosition.x = this.player.x
