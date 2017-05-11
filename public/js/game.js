@@ -26,6 +26,8 @@ var socket; // Socket connection
 var land;
 var station;
 
+var canChange = false;
+
 var player;
 
 var enemies;
@@ -75,6 +77,8 @@ function create () {
 
   // Start listening for events
   setEventHandlers();
+  
+  canChange = true;
 }
 
 var setEventHandlers = function () {
@@ -200,8 +204,17 @@ function update () {
   }
   
   if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.intersects(player, station)) {
-    changeTexture(player);
-    socket.emit('change', { key: player.key });
+    if(canChange) {
+      canChange = false;
+      changeTexture(player);
+      socket.emit('change', { key: player.key });
+      
+      setTimeout(function() {
+        canChange = true;
+      }, 1000);
+    } else {
+      console.log("1 Second interval in between changes");
+    }
   }
   
   game.physics.arcade.velocityFromAngle(player.angle - 90, currentSpeed, player.body.velocity);
