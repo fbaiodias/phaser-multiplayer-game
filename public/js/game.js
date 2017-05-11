@@ -34,6 +34,8 @@ var currentSpeed = 0;
 var cursors;
 
 function create () {
+  alert("Created By Noah Coetsee! Enjoy!");
+  
   socket = io.connect();
 
   // Resize our game world to be a 3500 x 3500 square
