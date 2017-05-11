@@ -1,8 +1,10 @@
 body {
   margin: 0;
   overflow: hidden;
+  background-color: black;
 }
 
 canvas {
   display: block;
+  text-align: center;
 }
