@@ -89,6 +89,9 @@ var setEventHandlers = function () {
 
   // Player move message received
   socket.on('move player', onMovePlayer);
+  
+  // Player change message received
+  socket.on('change player', onChangePlayer);
 
   // Player removed message received
   socket.on('remove player', onRemovePlayer);
@@ -144,6 +147,19 @@ function onMovePlayer (data) {
   movePlayer.player.angle = data.angle;
 }
 
+// Change Player
+function onChangePlayer (data) {
+  var changePlayer = playerById(data.id);
+  
+  // Player not found
+  if(!changePlayer) {
+    console.log("Player not found, ID: " + data.id);
+    return;
+  }
+  
+  changePlayer.player.loadTexture(data.key);
+}
+
 // Remove player
 function onRemovePlayer (data) {
   var removePlayer = playerById(data.id);
@@ -184,30 +200,10 @@ function update () {
   }
   
   if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.intersects(player, station)) {
-    var random = Math.floor(Math.random() * (8 - 1)) + 1;
-    
-    if(random == 8) {
-      player.loadTexture('fighter');
-    } else if(random == 7) {
-      player.loadTexture('corvette');
-    } else if(random == 6) {
-      player.loadTexture('frigate');
-    } else if(random == 5) {
-      player.loadTexture('destroyer');
-    } else if(random == 4) {
-      player.loadTexture('battleship');
-    } else if(random == 3) {
-      player.loadTexture('battlecruiser');
-    } else if(random == 2) {
-      player.loadTexture('cruiser');
-    } else if(random == 1) {
-      player.loadTexture('heavycruiser');
-    } else {
-      console.log("An error occured with the random number generation");
-      return;
-    }
+    changeTexture(player);
+    socket.emit('change', { key: player.key });
   }
-
+  
   game.physics.arcade.velocityFromAngle(player.angle - 90, currentSpeed, player.body.velocity);
 
   land.tilePosition.x = -game.camera.x;
@@ -218,6 +214,31 @@ function update () {
 
 function render () {
 
+}
+
+function changeTexture(object) {
+  var random = Math.floor(Math.random() * (8 - 1)) + 1;
+    
+  if(random == 8) {
+    object.loadTexture('fighter');
+  } else if(random == 7) {
+    object.loadTexture('corvette');
+  } else if(random == 6) {
+    object.loadTexture('frigate');
+  } else if(random == 5) {
+    object.loadTexture('destroyer');
+  } else if(random == 4) {
+    object.loadTexture('battleship');
+  } else if(random == 3) {
+    object.loadTexture('battlecruiser');
+  } else if(random == 2) {
+    object.loadTexture('cruiser');
+  } else if(random == 1) {
+    object.loadTexture('heavycruiser');
+  } else {
+    console.log("An error occured with the random number generation");
+    return;
+  }
 }
 
 // Find player by ID
