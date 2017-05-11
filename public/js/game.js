@@ -34,7 +34,7 @@ var currentSpeed = 0;
 var cursors;
 
 function create () {
-  alert("Created By Noah Coetsee! Enjoy!");
+  alert("Created By Noah Coetsee! Enjoy!\n\nP.S. Press space while hovering over the space station!");
   
   socket = io.connect();
 
