@@ -18,7 +18,7 @@ function preload () {
   game.load.image('enemy', 'assets/Fighter.png');
   
   // Space Station
-  game.load.image('station', 'assets/Human-Station.png');
+  game.load.image('station', 'assets/Human-Spacestation.png');
 }
 
 var socket; // Socket connection
